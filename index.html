@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gasriese Volumen-Demo (WebGPU)</title>
+<style>
+  :root { --bg:#05060a; --pan:#10131aee; --rand:#262b38; --text:#d7dbe6; --dim:#8a92a6; --akz:#e9a45c; }
+  * { box-sizing: border-box; }
+  html, body { margin:0; height:100%; background:var(--bg); color:var(--text); font:13px/1.4 system-ui, sans-serif; overflow:hidden; }
+  canvas { position:fixed; inset:0; width:100%; height:100%; display:block; touch-action:none; cursor:grab; }
+  canvas:active { cursor:grabbing; }
+  #pan { position:fixed; top:8px; right:8px; width:min(340px, calc(100vw - 16px)); max-height:calc(100vh - 16px); overflow:auto; background:var(--pan); border:1px solid var(--rand); border-radius:8px; padding:8px 10px; backdrop-filter:blur(6px); }
+  #pan h1 { font-size:14px; margin:0 0 2px; color:var(--akz); }
+  #pan p.s { margin:0 0 6px; color:var(--dim); font-size:11.5px; }
+  details { border-top:1px solid var(--rand); padding:4px 0; }
+  summary { cursor:pointer; font-weight:600; padding:2px 0; }
+  label.r { display:grid; grid-template-columns: 1fr 92px 46px; gap:6px; align-items:center; margin:2px 0; }
+  label.r span.n { color:var(--dim); font-size:12px; }
+  label.r output { text-align:right; font-variant-numeric:tabular-nums; font-size:12px; }
+  input[type=range] { width:100%; margin:0; accent-color:var(--akz); }
+  select, button, input[type=file] { background:#181c27; color:var(--text); border:1px solid var(--rand); border-radius:5px; padding:3px 6px; font:inherit; max-width:100%; }
+  .z { display:flex; gap:6px; align-items:center; margin:3px 0; flex-wrap:wrap; }
+  #st { position:fixed; left:8px; bottom:8px; background:var(--pan); border:1px solid var(--rand); border-radius:6px; padding:4px 8px; font-size:11.5px; color:var(--dim); max-width:calc(100vw - 370px); }
+  #fehler { position:fixed; inset:20% 10%; background:#300; color:#fcc; padding:16px; border-radius:8px; display:none; white-space:pre-wrap; z-index:9; }
+  .kopf { position:sticky; top:-8px; z-index:2; background:#10131a; display:flex; gap:6px; align-items:center; flex-wrap:wrap; padding:4px 0 6px; margin:0 0 2px; border-bottom:1px solid var(--rand); }
+  .kopf .n { color:var(--dim); font-size:11px; }
+  body.ohnepanel #pan, body.ohnepanel #st { display:none; }
+</style>
+</head>
+<body>
+<canvas id="cv"></canvas>
+<div id="fehler"></div>
+<div id="pan">
+  <h1>Gasriese · Volumen-Demo</h1>
+  <div class="kopf"><button id="reset">↺ Alles zurücksetzen</button><button id="resetKamera">↺ Kamera</button><span class="n">Doppelklick auf einen Regler = nur diesen zurücksetzen</span></div>
+  <p class="s">Tech-Demo: Eigenimplementierung eines in einem öffentlichen Blender-Tutorial gezeigten Verfahrens (siehe README). Keine Simulation: Textur → Dichtefeld → Volumen-Rendering, plus Kino-Nachbearbeitung. Ziehen = drehen, Rad = Zoom, H = Bedienfeld ein/aus. Code in Blöcken: <code>bloecke/</code>.</p>
+
+  <details open><summary>Farbquelle (Image Texture)</summary>
+    <div class="z"><span class="n">Karte</span><select id="karte"></select></div>
+    <div class="z"><span class="n">Modus</span>
+      <select id="modus"><option value="0">Bild-Textur (Hauptweg)</option><option value="1">Prozedural: Noise → Voronoi (Schluss-Trick des Tutorials)</option></select></div>
+    <div class="z"><span class="n">Vektor</span>
+      <select id="zentriert"><option value="1">zentriert (Mapping −0,5)</option><option value="0">Generated 0…1 unzentriert (wie im Tutorial, Artefakte)</option></select></div>
+    <div class="z"><input type="file" id="datei" accept="image/*"> <span class="n">eigene Karte (oder auf die Seite ziehen)</span></div>
+    <div id="g_farbe"></div>
+  </details>
+  <details open><summary>Dichte-Feld (Mix → Gradient → ColorRamp)</summary>
+    <div class="z"><span class="n">ColorRamp</span>
+      <select id="rampe"><option value="0">Constant (Endstand im Tutorial)</option><option value="1">Linear (Zwischenstand, weich)</option></select></div>
+    <div id="g_dichte"></div></details>
+  <details open><summary>Farbe (Hue/Saturation/Value) &amp; Volumen</summary><div id="g_volumen"></div></details>
+  <details open><summary>Atmosphäre (zweites Principled Volume)</summary><div id="g_atm"></div></details>
+  <details open><summary>Sonne, Kamera &amp; Render</summary><div id="g_licht"></div></details>
+  <details open><summary>Kino-Nachbearbeitung (Zusatz, nicht Teil des Verfahrens)</summary>
+    <div class="z"><span class="n">Format</span>
+      <select id="format"><option value="0">Vollbild</option><option value="2.39">Scope 2,39:1</option><option value="2">Univisium 2:1</option></select></div>
+    <div id="g_kino"></div></details>
+  <details><summary>Prozedural-Parameter (geschätzt)</summary><div id="g_proc"></div></details>
+</div>
+<div id="st">starte …</div>
+<script>addEventListener('keydown', (e) => { if (e.key === 'h' || e.key === 'H') document.body.classList.toggle('ohnepanel'); });</script>
+<script type="module" src="bloecke/js/main.js"></script>
+</body>
+</html>

@@ -17,7 +17,8 @@ const EN = {
   s_schritt: 'Step size (scene units)', s_spp: 'Samples per frame', s_skala: 'Resolution (factor)', s_maxS: 'Final samples',
   s_pSkala: 'Voronoi scale', s_pNoise: 'Noise scale', s_pDist: 'Distortion (noise → Voronoi)', s_pZ: 'Stretch Z (bands)', s_pDet: 'Noise detail',
   s_bloom: 'Bloom strength', s_bloomS: 'Bloom threshold', s_korn: 'Film grain', s_vign: 'Vignette', s_chroma: 'Chromatic aberration (lens)', s_grade: 'Grading (teal/orange)', s_sterne: 'Stars',
-  st_samples: 'Samples', st_done: 'done', st_ms: 'ms/frame', lang: 'DE',
+  st_samples: 'Samples', st_done: 'done', st_ms: 'ms/frame', st_prev: 'Preview', st_refine: 'Refining',
+  st_gpu: 'Tip: probably running on the integrated GPU. Set Chrome to "High performance" in the Windows graphics settings', lang: 'DE',
 };
 const DE_TASTE = 'EN';
 let lang = 'de';

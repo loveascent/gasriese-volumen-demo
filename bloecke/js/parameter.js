@@ -53,15 +53,16 @@ const norm = (v) => { const l = Math.hypot(...v); return v.map((x) => x / l); };
 const kreuz = (a, b) => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
 
 // Rechen-Uniform P (12 vec4): siehe WGSL-Blöcke (Index P[i].xyzw)
-export function schreibeP(W, rw, rh, frame) {
+// st = { modus 0/1/2, row0, rows, block, spp }: Steuerung von Vorschau/Verfeinern (siehe wgsl/rechnen.js)
+export function schreibeP(W, rw, rh, seed, st) {
   const cp = Math.cos(W.pitch), sp = Math.sin(W.pitch);
   const pos = [W.dist * Math.sin(W.yaw) * cp, -W.dist * Math.cos(W.yaw) * cp, W.dist * sp];
   const fwd = norm(pos.map((x) => -x));
   const right = norm(kreuz(fwd, [0, 0, 1])); const up = kreuz(right, fwd);
   const az = W.sunAz * Math.PI / 180, el = W.sunEl * Math.PI / 180;
   const sun = [Math.sin(az) * Math.cos(el), -Math.cos(az) * Math.cos(el), Math.sin(el)];
-  const u = new Float32Array(48);
-  u.set([rw, rh, frame, W.spp], 0);
+  const u = new Float32Array(52);
+  u.set([rw, rh, seed, st.spp], 0);
   u.set([...pos, Math.tan(W.fov * Math.PI / 360)], 4);
   u.set([...right, W.modus], 8);
   u.set([...up, W.zentriert], 12);
@@ -73,9 +74,11 @@ export function schreibeP(W, rw, rh, frame) {
   u.set([W.atmR, W.atmG, W.atmB, 1024], 36);
   u.set([W.pSkala, W.pNoise, W.pDist, W.pZ], 40);
   u.set([W.expo, 0, W.pDet, W.rampe], 44);
+  u.set([st.modus, st.row0, st.rows, st.block], 48);
   return u;
 }
 // Kino-Uniform Q (4 vec4)
-export function schreibeQ(W, frame) {
-  return new Float32Array([W.bloom, W.bloomS, W.korn, W.vign, W.chroma, W.format, W.sterne, W.grade, frame, 0, 0, 0, 0, 0, 0, 0]);
+// Letterbox nur bei Querformat (bei fast quadratischen oder hohen Fenstern wäre der Streifen winzig)
+export function schreibeQ(W, frame, aspekt = 2) {
+  return new Float32Array([W.bloom, W.bloomS, W.korn, W.vign, W.chroma, aspekt >= 1.5 ? W.format : 0, W.sterne, W.grade, frame, 0, 0, 0, 0, 0, 0, 0]);
 }

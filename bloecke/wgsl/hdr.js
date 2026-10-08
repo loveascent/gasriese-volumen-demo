@@ -26,12 +26,26 @@ fn sterne(rd: vec3<f32>, pixWinkel: f32) -> vec3<f32> {
   return s * Q[1].z;
 }
 
+fn lies(bx: i32, by: i32, bi: i32, Wi: i32, Hi: i32) -> vec3<f32> {
+  let x = clamp(bx * bi + bi / 2, 0, Wi - 1); let y = clamp(by * bi + bi / 2, 0, Hi - 1);
+  let a = acc[u32(y * Wi + x)];
+  return a.rgb / max(abs(a.w), 1.0);
+}
+
 @compute @workgroup_size(8, 8, 1)
 fn main(@builtin(global_invocation_id) gid: vec3<u32>) {
   let W = u32(P[0].x); let H = u32(P[0].y);
   if (gid.x >= W || gid.y >= H) { return; }
   let a = acc[gid.y * W + gid.x];
-  var lin = a.rgb / max(a.w, 1.0);
+  var lin = a.rgb / max(abs(a.w), 1.0);
+  let bl = P[12].w;
+  if (a.w < 0.0 && bl > 1.5) {
+    // Vorschau-Pixel: bilinear zwischen den Blockmitten (glatt statt Kacheln)
+    let bi = i32(bl); let Wi = i32(W); let Hi = i32(H);
+    let g = (vec2<f32>(f32(gid.x), f32(gid.y)) + 0.5) / bl - 0.5;
+    let i0 = vec2<i32>(floor(g)); let f = g - floor(g);
+    lin = mix(mix(lies(i0.x, i0.y, bi, Wi, Hi), lies(i0.x + 1, i0.y, bi, Wi, Hi), f.x), mix(lies(i0.x, i0.y + 1, bi, Wi, Hi), lies(i0.x + 1, i0.y + 1, bi, Wi, Hi), f.x), f.y);
+  }
   if (Q[1].z > 0.0) {
     let aspect = P[0].x / P[0].y;
     let ndc = ((vec2<f32>(f32(gid.x), f32(gid.y)) + 0.5) / vec2<f32>(P[0].x, P[0].y) * 2.0 - 1.0) * vec2<f32>(1.0, -1.0);

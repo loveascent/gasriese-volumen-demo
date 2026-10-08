@@ -9,7 +9,7 @@
 
 ![Vorschau](docs/vorschau.png)
 
-> Kein fertiges Produkt: ein Lern- und Vergleichsexperiment. Das Bild ist ein **Standbild-Renderer** (es summiert Samples über viele Bilder), **keine Echtzeit-Simulation**: Nichts bewegt sich außer Kamera und Objektdrehung.
+> Kein fertiges Produkt: ein Lern- und Vergleichsexperiment. Ein **progressiver Renderer**, **keine Echtzeit-Simulation**: bei Ziehen oder Reglerbewegung zeigt er eine grobe Vorschau, in Ruhe verfeinert er das Bild Sample für Sample. Nichts bewegt sich außer Kamera und Objektdrehung.
 
 ## Was passiert
 
@@ -54,7 +54,7 @@ Code: MIT (siehe `LICENSE`). Karte: CC BY 4.0, Namensnennung siehe Abschnitt Dat
 
 ## Grenzen (ehrlich)
 
-- Standbild-Renderer, bei Bewegung beginnt er neu und rauscht; hoher Rechenaufwand. Bildraten wurden nicht systematisch gemessen (eine Messung ohne Fenster: etwa 4 ms pro Bild bei 1280×720 mit 1 Sample auf einer RTX 5080).
+- **Automatische Qualität:** Blockgröße der Vorschau und Zeilenzahl der Verfeinerung regeln sich auf etwa 60 fps (Ziel: höchstens 22 ms pro Bild). Nur auf einer RTX 5080 gemessen: eine Stress-Einstellung (1848×1440, 4 Samples, feine Schritte) blieb bei etwa 14–15 ms pro Bild. **Auf integrierten Grafikkarten noch nicht gemessen**; dort ist die Vorschau gröber und das Verfeinern dauert länger.
 - Getestet nur mit Chrome auf einer NVIDIA RTX 5080.
 - Bei Ruckeln den Adapternamen unten links prüfen: Windows nimmt für den Browser oft die integrierte Grafik; Chrome unter Einstellungen → System → Anzeige → Grafik auf „Hohe Leistung“ stellen.
 - Das Muster ist ein statisches Foto. Strömung, Wirbel, Zeit gibt es nicht.

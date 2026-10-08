@@ -8,7 +8,7 @@
 
 ![Preview](docs/vorschau.png)
 
-> Not a finished product, but a learning and comparison experiment. The image is a **still-frame renderer** (it accumulates samples over many frames), **not a real-time simulation**: nothing moves except the camera and the object's rotation.
+> Not a finished product, but a learning and comparison experiment. It is a **progressive renderer**, **not a real-time simulation**: while you drag or move a slider it shows a coarse preview, at rest it refines the image sample by sample. Nothing moves except the camera and the object's rotation.
 
 ## What happens
 
@@ -50,7 +50,7 @@ node server.mjs 5206
 
 Controls: drag = rotate, mouse wheel = zoom, `H` = hide/show the panel, double-click a slider = reset that slider, top button "Reset all". The `EN`/`DE` button switches the interface language (default follows the browser).
 
-If it stutters, check the adapter name in the status line (bottom left). On laptops, Windows may pick the integrated GPU for the browser; set Chrome to "High performance" under Settings → System → Display → Graphics.
+If it is slow, check the adapter name in the status line (bottom left). On laptops, Windows may pick the integrated GPU for the browser; set Chrome to "High performance" under Settings → System → Display → Graphics.
 
 ## Licence
 
@@ -58,7 +58,7 @@ Code: MIT (see `LICENSE`). Map: CC BY 4.0, attribution in the Data section above
 
 ## Limits (honest)
 
-- Still-frame renderer: it restarts and gets noisy when something moves; heavy on the GPU. Frame rates were not measured systematically (one headless measurement: about 4 ms per frame at 1280×720 with 1 sample on an RTX 5080).
+- **Adaptive quality:** the preview block size and the number of rows refined per frame regulate themselves towards about 60 fps on any GPU (target: ≤ 22 ms per frame). Measured on an RTX 5080 only: a stress setting (1848×1440, 4 samples, fine steps) stayed at about 14–15 ms per frame. **Not yet measured on integrated GPUs**; there the preview is coarser and refining takes longer.
 - Tested only with Chrome on an NVIDIA RTX 5080.
 - The pattern is a static photo. There is no flow, no vortices, no time.
 - Some defaults (atmosphere density, ramp position, sun angle) were set by eye.

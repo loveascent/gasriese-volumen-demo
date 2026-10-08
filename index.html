@@ -8,7 +8,11 @@
   :root { --bg:#05060a; --pan:#10131aee; --rand:#262b38; --text:#d7dbe6; --dim:#8a92a6; --akz:#e9a45c; }
   * { box-sizing: border-box; }
   html, body { margin:0; height:100%; background:var(--bg); color:var(--text); font:13px/1.4 system-ui, sans-serif; overflow:hidden; }
-  canvas { position:fixed; inset:0; width:100%; height:100%; display:block; touch-action:none; cursor:grab; }
+  :root { --panelW: 356px; }
+  canvas { position:fixed; left:0; top:0; bottom:0; right:var(--panelW); width:calc(100% - var(--panelW)); height:100%; display:block; touch-action:none; cursor:grab; }
+  body.ohnepanel canvas { right:0; width:100%; }
+  @media (max-width: 720px) { :root { --panelW: 0px; } #pan { background:#10131af5; } }
+  #menue { position:fixed; left:8px; top:8px; z-index:3; opacity:.8; }
   canvas:active { cursor:grabbing; }
   #pan { position:fixed; top:8px; right:8px; width:min(340px, calc(100vw - 16px)); max-height:calc(100vh - 16px); overflow:auto; background:var(--pan); border:1px solid var(--rand); border-radius:8px; padding:8px 10px; backdrop-filter:blur(6px); }
   #pan h1 { font-size:14px; margin:0 0 2px; color:var(--akz); }
@@ -30,6 +34,7 @@
 </head>
 <body>
 <canvas id="cv"></canvas>
+<button id="menue" title="Bedienfeld ein/aus (H)">☰</button>
 <div id="fehler"></div>
 <div id="pan">
   <h1>Gasriese · Volumen-Demo</h1>
@@ -59,7 +64,12 @@
   <details><summary data-t="sm_proc">Prozedural-Parameter (geschätzt)</summary><div id="g_proc"></div></details>
 </div>
 <div id="st">starte …</div>
-<script>addEventListener('keydown', (e) => { if (e.key === 'h' || e.key === 'H') document.body.classList.toggle('ohnepanel'); });</script>
+<script>
+  const umschalten = () => document.body.classList.toggle('ohnepanel');
+  addEventListener('keydown', (e) => { if (e.key === 'h' || e.key === 'H') umschalten(); });
+  document.getElementById('menue').onclick = umschalten;
+  if (innerWidth < 720) document.body.classList.add('ohnepanel');   // schmale Fenster/Handy: Bild zuerst, Bedienfeld per ☰
+</script>
 <script type="module" src="bloecke/js/main.js"></script>
 </body>
 </html>

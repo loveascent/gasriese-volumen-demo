@@ -2,6 +2,8 @@
 
 **English** · [Deutsch](README.de.md)
 
+**▶ [Open the live demo](https://loveascent.github.io/gasriese-volumen-demo/)** (needs a WebGPU browser: Chrome/Edge 113+)
+
 **Tech demo / experiment.** A gas giant rendered as a volume in the browser: a planet photo displaces a spherical density field, and a WebGPU ray marcher renders it with self-shadowing, a haze shell and cinematic post-processing. It is a from-scratch re-implementation of a technique shown in a public Blender tutorial.
 
 ![Preview](docs/vorschau.png)
@@ -36,6 +38,8 @@ The sense of depth comes from real geometry (silhouette and self-shadowing), not
 `karten/jupiter_4k_solarsystemscope.jpg` (4096×2048): **Solar System Scope**, <https://www.solarsystemscope.com/textures/>, licence **CC BY 4.0**, based on NASA data (Cassini). It is called "8k" there but is 4096×2048. You can drop your own maps onto the page.
 
 ## Run it
+
+Online: <https://loveascent.github.io/gasriese-volumen-demo/>. Locally:
 
 You need a WebGPU browser (Chrome/Edge 113 or newer) and a small web server (ES modules do not run from `file://`):
 

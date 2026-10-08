@@ -2,6 +2,8 @@
 
 [English](README.md) · **Deutsch**
 
+**▶ [Live-Demo öffnen](https://loveascent.github.io/gasriese-volumen-demo/)** (braucht einen WebGPU-Browser: Chrome/Edge ab 113)
+
 **Tech-Demo / Experiment.** Ein Gasriese als Volumen im Browser: ein Planetenfoto verschiebt ein kugelförmiges Dichtefeld, ein WebGPU-Raymarcher rendert es mit Selbstschatten, Atmosphäre und Kino-Nachbearbeitung.
 *English: an experimental WebGPU demo. A planet photo displaces a spherical density field that is volume-ray-marched with self-shadowing, a haze shell and cinematic post-processing. A from-scratch re-implementation of a technique shown in a public Blender tutorial.*
 

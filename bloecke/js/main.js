@@ -4,6 +4,7 @@ import { baueOberflaeche } from './oberflaeche.js';
 import { ladeKarte, platzhalter } from './bild.js';
 import { Renderer } from './renderer.js';
 import { Nachbild } from './nachbild.js';
+import { t as tr } from './sprache.js';
 
 const st = document.getElementById('st');
 const zeigeFehler = (t) => { const f = document.getElementById('fehler'); f.style.display = 'block'; f.textContent = t; };
@@ -67,7 +68,7 @@ async function main() {
       postDirty = false;
     }
     const t = performance.now(); ms = ms * 0.9 + (t - tLetzt) * 0.1; tLetzt = t;
-    st.textContent = `${gpuName} · ${rw}×${rh} · Samples ${Math.min(frame * W.spp, W.maxS)}/${W.maxS} · ${fertig ? 'fertig' : ms.toFixed(0) + ' ms/Bild'} · ${texInfo}`;
+    st.textContent = `${gpuName} · ${rw}×${rh} · ${tr('st_samples', 'Samples')} ${Math.min(frame * W.spp, W.maxS)}/${W.maxS} · ${fertig ? tr('st_done', 'fertig') : ms.toFixed(0) + ' ' + tr('st_ms', 'ms/Bild')} · ${texInfo}`;
     requestAnimationFrame(bild);
   }
   requestAnimationFrame(bild);

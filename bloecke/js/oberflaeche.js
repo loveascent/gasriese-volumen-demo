@@ -1,5 +1,6 @@
 // Block Oberfläche: baut die Regler aus der Tabelle, verdrahtet Auswahlfelder, Maus (Drehen/Zoom) und Datei-Ziehen. Kennt keine GPU.
 import { SPEC, STD, NEBEN, IST_POST, KARTEN } from './parameter.js';
+import { uebersetze, wechsleSprache } from './sprache.js';
 
 const stellen = (sp) => (sp[5] < 0.01 ? 3 : sp[5] < 1 ? 2 : 0);
 
@@ -8,7 +9,7 @@ export function baueOberflaeche(W, an) {
   for (const sp of SPEC) {
     const [gid, name, key, mn, mx, step, val, einh] = sp;
     const l = document.createElement('label'); l.className = 'r'; l.title = 'Doppelklick = zurücksetzen';
-    l.innerHTML = `<span class="n">${name}</span><input type="range" min="${mn}" max="${mx}" step="${step}" value="${val}" data-k="${key}"><output>${val}${einh}</output>`;
+    l.innerHTML = `<span class="n" data-t="s_${key}">${name}</span><input type="range" min="${mn}" max="${mx}" step="${step}" value="${val}" data-k="${key}"><output>${val}${einh}</output>`;
     document.getElementById(gid).appendChild(l);
   }
   const ks = document.getElementById('karte');
@@ -49,5 +50,7 @@ export function baueOberflaeche(W, an) {
   });
   cv.addEventListener('wheel', (e) => { e.preventDefault(); W.dist = Math.max(80, Math.min(600, W.dist * Math.exp(e.deltaY * 0.001))); sync(); an.aendert('neu'); }, { passive: false });
   addEventListener('resize', () => an.groesse());
+  document.getElementById('sprache').onclick = wechsleSprache;
+  uebersetze();
   return { sync };
 }

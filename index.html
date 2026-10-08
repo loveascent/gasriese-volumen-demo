@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Gasriese Volumen-Demo (WebGPU)</title>
+<title>Gas giant volume demo (WebGPU)</title>
 <style>
   :root { --bg:#05060a; --pan:#10131aee; --rand:#262b38; --text:#d7dbe6; --dim:#8a92a6; --akz:#e9a45c; }
   * { box-sizing: border-box; }
@@ -33,30 +33,30 @@
 <div id="fehler"></div>
 <div id="pan">
   <h1>Gasriese · Volumen-Demo</h1>
-  <div class="kopf"><button id="reset">↺ Alles zurücksetzen</button><button id="resetKamera">↺ Kamera</button><span class="n">Doppelklick auf einen Regler = nur diesen zurücksetzen</span></div>
-  <p class="s">Tech-Demo: Eigenimplementierung eines in einem öffentlichen Blender-Tutorial gezeigten Verfahrens (siehe README). Keine Simulation: Textur → Dichtefeld → Volumen-Rendering, plus Kino-Nachbearbeitung. Ziehen = drehen, Rad = Zoom, H = Bedienfeld ein/aus. Code in Blöcken: <code>bloecke/</code>.</p>
+  <div class="kopf"><button id="reset" data-t="b_reset">↺ Alles zurücksetzen</button><button id="resetKamera" data-t="b_cam">↺ Kamera</button><span class="n" data-t="hint">Doppelklick auf einen Regler = nur diesen zurücksetzen</span><button id="sprache" title="Deutsch / English" style="margin-left:auto">EN</button></div>
+  <p class="s" data-t="intro" data-html>Tech-Demo: Eigenimplementierung eines in einem öffentlichen Blender-Tutorial gezeigten Verfahrens (siehe README). Keine Simulation: Textur → Dichtefeld → Volumen-Rendering, plus Kino-Nachbearbeitung. Ziehen = drehen, Rad = Zoom, H = Bedienfeld ein/aus. Code in Blöcken: <code>bloecke/</code>.</p>
 
-  <details open><summary>Farbquelle (Image Texture)</summary>
-    <div class="z"><span class="n">Karte</span><select id="karte"></select></div>
-    <div class="z"><span class="n">Modus</span>
-      <select id="modus"><option value="0">Bild-Textur (Hauptweg)</option><option value="1">Prozedural: Noise → Voronoi (Schluss-Trick des Tutorials)</option></select></div>
-    <div class="z"><span class="n">Vektor</span>
-      <select id="zentriert"><option value="1">zentriert (Mapping −0,5)</option><option value="0">Generated 0…1 unzentriert (wie im Tutorial, Artefakte)</option></select></div>
-    <div class="z"><input type="file" id="datei" accept="image/*"> <span class="n">eigene Karte (oder auf die Seite ziehen)</span></div>
+  <details open><summary data-t="sm_farbe">Farbquelle (Image Texture)</summary>
+    <div class="z"><span class="n" data-t="l_karte">Karte</span><select id="karte"></select></div>
+    <div class="z"><span class="n" data-t="l_modus">Modus</span>
+      <select id="modus"><option value="0" data-t="o_modus0">Bild-Textur (Hauptweg)</option><option value="1" data-t="o_modus1">Prozedural: Noise → Voronoi (Schluss-Trick des Tutorials)</option></select></div>
+    <div class="z"><span class="n" data-t="l_vektor">Vektor</span>
+      <select id="zentriert"><option value="1" data-t="o_zentr1">zentriert (Mapping −0,5)</option><option value="0" data-t="o_zentr0">Generated 0…1 unzentriert (wie im Tutorial, Artefakte)</option></select></div>
+    <div class="z"><input type="file" id="datei" accept="image/*"> <span class="n" data-t="l_datei">eigene Karte (oder auf die Seite ziehen)</span></div>
     <div id="g_farbe"></div>
   </details>
-  <details open><summary>Dichte-Feld (Mix → Gradient → ColorRamp)</summary>
-    <div class="z"><span class="n">ColorRamp</span>
-      <select id="rampe"><option value="0">Constant (Endstand im Tutorial)</option><option value="1">Linear (Zwischenstand, weich)</option></select></div>
+  <details open><summary data-t="sm_dichte">Dichte-Feld (Mix → Gradient → ColorRamp)</summary>
+    <div class="z"><span class="n" data-t="l_rampe">ColorRamp</span>
+      <select id="rampe"><option value="0" data-t="o_rampe0">Constant (Endstand im Tutorial)</option><option value="1" data-t="o_rampe1">Linear (Zwischenstand, weich)</option></select></div>
     <div id="g_dichte"></div></details>
-  <details open><summary>Farbe (Hue/Saturation/Value) &amp; Volumen</summary><div id="g_volumen"></div></details>
-  <details open><summary>Atmosphäre (zweites Principled Volume)</summary><div id="g_atm"></div></details>
-  <details open><summary>Sonne, Kamera &amp; Render</summary><div id="g_licht"></div></details>
-  <details open><summary>Kino-Nachbearbeitung (Zusatz, nicht Teil des Verfahrens)</summary>
-    <div class="z"><span class="n">Format</span>
-      <select id="format"><option value="0">Vollbild</option><option value="2.39">Scope 2,39:1</option><option value="2">Univisium 2:1</option></select></div>
+  <details open><summary data-t="sm_vol">Farbe (Hue/Saturation/Value) &amp; Volumen</summary><div id="g_volumen"></div></details>
+  <details open><summary data-t="sm_atm">Atmosphäre (zweites Principled Volume)</summary><div id="g_atm"></div></details>
+  <details open><summary data-t="sm_licht">Sonne, Kamera &amp; Render</summary><div id="g_licht"></div></details>
+  <details open><summary data-t="sm_kino">Kino-Nachbearbeitung (Zusatz, nicht Teil des Verfahrens)</summary>
+    <div class="z"><span class="n" data-t="l_format">Format</span>
+      <select id="format"><option value="0" data-t="o_format0">Vollbild</option><option value="2.39" data-t="o_format1">Scope 2,39:1</option><option value="2" data-t="o_format2">Univisium 2:1</option></select></div>
     <div id="g_kino"></div></details>
-  <details><summary>Prozedural-Parameter (geschätzt)</summary><div id="g_proc"></div></details>
+  <details><summary data-t="sm_proc">Prozedural-Parameter (geschätzt)</summary><div id="g_proc"></div></details>
 </div>
 <div id="st">starte …</div>
 <script>addEventListener('keydown', (e) => { if (e.key === 'h' || e.key === 'H') document.body.classList.toggle('ohnepanel'); });</script>
